@@ -1,0 +1,1 @@
+detectnet --model=balloon_detector.onnx --labels=balloon_labels.txt --input-blob=input_0 --output-cvg=scores --output-bbox=boxes /dev/video0
