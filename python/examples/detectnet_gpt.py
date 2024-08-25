@@ -73,7 +73,7 @@ def main():
     try:
         print("inside try top")
         # Process frames until EOS or the user exits
-        ##while input.IsStreaming() and output.IsStreaming():
+        #while input.IsStreaming() and output.IsStreaming():
         while True:
             img = input.Capture()
             print("have image i think")
