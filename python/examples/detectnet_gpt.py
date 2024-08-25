@@ -52,19 +52,43 @@ def init_helios_dac():
 
 
 ## in practice, I find x needs to be scaled more
-x_boost = 1.8
+#x_boost = 1.8
 
-def calculate_laser_coords(center_x, center_y, camera_width=1280, camera_height=720, laser_max=4095):
-    """Calculate laser coordinates based on detection center with proper scaling from camera coordinates."""
-    # Scale the camera coordinates (0-1280 for x, 0-720 for y) to the laser coordinates (0-4095 for both x and y)
-    x = int((center_x / (camera_width * x_boost)) * laser_max)
-    y = int((center_y / camera_height) * laser_max)
+#def calculate_laser_coords(center_x, center_y, camera_width=1280, camera_height=720, laser_max=4095):
+#    """Calculate laser coordinates based on detection center with proper scaling from camera coordinates."""
+#    # Scale the camera coordinates (0-1280 for x, 0-720 for y) to the laser coordinates (0-4095 for both x and y)
+#    x = int((center_x / (camera_width * x_boost)) * laser_max)
+#    y = int((center_y / camera_height) * laser_max)
+#    
+#    # Optionally, adjust the y-coordinate if the coordinate systems differ in origin (e.g., invert y-axis)
+#    # Uncomment the following line if the laser y-coordinate needs to be inverted
+#    y = laser_max - y
+#
+#    return x, y
+
+
+import numpy as np
+
+def calculate_laser_coords(center_x, center_y, camera_width=1280, camera_height=720, laser_max=4095, 
+                            exp_x=1, exp_y=1.0):
+    """Calculate laser coordinates based on detection center using exponential scaling."""
     
-    # Optionally, adjust the y-coordinate if the coordinate systems differ in origin (e.g., invert y-axis)
-    # Uncomment the following line if the laser y-coordinate needs to be inverted
+    # Normalize the camera coordinates to a range of 0 to 1
+    norm_x = center_x / camera_width
+    norm_y = center_y / camera_height
+    
+    # Apply exponential scaling
+    scaled_x = laser_max * (np.power(norm_x, exp_x))
+    scaled_y = laser_max * (np.power(norm_y, exp_y))
+    
+    # Clip the values to ensure they fall within the valid laser range
+    x = int(np.clip(scaled_x, 0, laser_max))
+    y = int(np.clip(scaled_y, 0, laser_max))
     y = laser_max - y
-
+    
     return x, y
+
+
 
 
 
