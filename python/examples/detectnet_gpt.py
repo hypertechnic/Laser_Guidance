@@ -28,11 +28,45 @@ def init_helios_dac():
     print(f"Found {num_devices} Helios DAC(s)")
     return helios_lib, num_devices
 
+## notes on scaling between camera and laser
+# (x, y)
+
+## camera TOP LEFT = (0, 0)
+## camera TOP RIGHT = (1280, 0)
+## camera BOTTOM LEFT = (0, 720)
+## camera BOTTOM RIGHT = (1280, 720)
+
+## laser TOP LEFT = (0, 4095)
+## laser TOP RIGHT = (4095, 4095)
+## laser BOTTOM LEFT = (0, 0)
+## laser BOTTOM RIGHT = (4095, 0)
+
+## x just needs to scale, factors are 1280/4095
+## y needs to flip and scale. Factors are 720/4095
+
 # Function to calculate laser coordinates
-def calculate_laser_coords(center_x, center_y):
-    x = int(1.6 * (center_x * 3.415) - 1600)
-    y = int(4096 - (center_y * 5.68))
+#def calculate_laser_coords(center_x, center_y):
+#    x = int(1.6 * (center_x * 3.415) - 1600)
+#    y = int(4096 - (center_y * 5.68))
+#    return x, y
+
+
+## in practice, I find x needs to be scaled more
+x_boost = 1.8
+
+def calculate_laser_coords(center_x, center_y, camera_width=1280, camera_height=720, laser_max=4095):
+    """Calculate laser coordinates based on detection center with proper scaling from camera coordinates."""
+    # Scale the camera coordinates (0-1280 for x, 0-720 for y) to the laser coordinates (0-4095 for both x and y)
+    x = int((center_x / (camera_width * x_boost)) * laser_max)
+    y = int((center_y / camera_height) * laser_max)
+    
+    # Optionally, adjust the y-coordinate if the coordinate systems differ in origin (e.g., invert y-axis)
+    # Uncomment the following line if the laser y-coordinate needs to be inverted
+    y = laser_max - y
+
     return x, y
+
+
 
 # Send a frame to the laser DAC
 def send_laser_frame(helios_lib, num_devices, x, y):
@@ -71,12 +105,10 @@ def main():
     helios_lib, num_devices = init_helios_dac()
 
     try:
-        print("inside try top")
         # Process frames until EOS or the user exits
         #while input.IsStreaming() and output.IsStreaming():
         while True:
             img = input.Capture()
-            print("have image i think")
             if img is None:  # timeout
                 print("image timed out!!!!")
                 continue
@@ -100,7 +132,6 @@ def main():
 
             # Print out performance info
             net.PrintProfilerTimes()
-            print("inside try bottom")
     finally:
         helios_lib.CloseDevices()
 
