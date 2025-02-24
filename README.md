@@ -1,8 +1,13 @@
-Laser Tracking System
+# Laser Tracking System Project
 
 A Python-based system that uses a HeliosDAC digital-to-analog interface, a Lasercube scanning laser, and a USB camera (via PyTorch) to track and highlight 2D objects in real-time. Designed to run on an Nvidia Jetson but adaptable to other devices, the system can point a laser at detected objects, change laser colors based on detection confidence or object type, and handle multiple object tracking.
 
-Features
+![download](https://github.com/user-attachments/assets/999108de-f563-44cb-929b-b12796b73a9a)
+
+Demonstration Video:
+https://youtu.be/aSx_q8-XqPE
+
+# Features
 
 Real-Time Object Tracking: Detect and follow multiple 2D objects.
 
@@ -12,9 +17,9 @@ Flexible Hardware Compatibility: Optimized for Nvidia Jetson but usable with oth
 
 Configurable Detection Settings: Easily adjust detection parameters and laser behaviors.
 
-Hardware Requirements
+# Hardware Requirements
 
-HeliosDAC: Digital-to-analog interface for laser control.
+HeliosDAC: Digital-to-analog interface for laser control. (https://bitlasers.com/helios-laser-dac/)
 
 Lasercube: Scanning laser for object highlighting.
 
@@ -22,22 +27,22 @@ USB Camera: For capturing live video feed.
 
 Optional: Nvidia Jetson for optimized performance.
 
-Software Requirements
+# Software Requirements
 
 Python 3.x
 
 PyTorch (for object detection)
 
-HeliosDAC Python library
+HeliosDAC Python library (https://github.com/Grix/helios_dac)
 
-Installation
+# Installation
 
 # Clone the repository
 git clone <repository-url>
 cd <repository-folder>
 
 
-Usage
+# Usage
 
 cd examples
 python detectnet_centerLaser.py --camera_id 0 --laser_port /dev/ttyUSB0 
@@ -52,9 +57,9 @@ detection:
   confidence_threshold: 0.5
   max_objects: 5
 
-Acknowledgments
+# Acknowledgments
 
-HeliosDAC Team: For their open-source Python library.
+Helios_dac Team: For their open-source Python library.
 
 PyTorch: For the object detection backbone.
 
